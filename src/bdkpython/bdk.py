@@ -31,14 +31,14 @@ class RustBuffer(ctypes.Structure):
 
     @staticmethod
     def alloc(size):
-        return rust_call(_UniFFILib.ffi_bdk_b9b3_rustbuffer_alloc, size)
+        return rust_call(_UniFFILib.ffi_bdk_caca_rustbuffer_alloc, size)
 
     @staticmethod
     def reserve(rbuf, additional):
-        return rust_call(_UniFFILib.ffi_bdk_b9b3_rustbuffer_reserve, rbuf, additional)
+        return rust_call(_UniFFILib.ffi_bdk_caca_rustbuffer_reserve, rbuf, additional)
 
     def free(self):
-        return rust_call(_UniFFILib.ffi_bdk_b9b3_rustbuffer_free, self)
+        return rust_call(_UniFFILib.ffi_bdk_caca_rustbuffer_free, self)
 
     def __str__(self):
         return "RustBuffer(capacity={}, len={}, data={})".format(
@@ -389,10 +389,15 @@ class FfiConverterDictionary:
 def loadIndirect():
     if sys.platform == "linux":
         # libname = "lib{}.so"
-        libname = os.path.join(os.path.dirname(__file__), "lib{}.so")
+        # libname = os.path.join(os.path.dirname(__file__), "lib{}.so")
+        libname = os.path.join(os.path.dirname(__file__), "linux-x86_64/lib{}.so")
     elif sys.platform == "darwin":
         # libname = "lib{}.dylib"
-        libname = os.path.join(os.path.dirname(__file__), "lib{}.dylib")
+        # libname = os.path.join(os.path.dirname(__file__), "lib{}.dylib")
+        if platform.machine() == "arm64":
+            libname = os.path.join(os.path.dirname(__file__), "darwin-arm64/lib{}.dylib")
+        elif platform.machine() == "x86_64":
+            libname = os.path.join(os.path.dirname(__file__), "darwin-x86_64/lib{}.dylib")
     elif sys.platform.startswith("win"):
         # As of python3.8, ctypes does not seem to search $PATH when loading DLLs.
         # We could use `os.add_dll_directory` to configure the search path, but
@@ -408,50 +413,50 @@ def loadIndirect():
 # This is an implementation detail which will be called internally by the public API.
 
 _UniFFILib = loadIndirect()
-_UniFFILib.ffi_bdk_b9b3_OfflineWallet_object_free.argtypes = (
+_UniFFILib.ffi_bdk_caca_OfflineWallet_object_free.argtypes = (
     ctypes.c_void_p,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.ffi_bdk_b9b3_OfflineWallet_object_free.restype = None
-_UniFFILib.bdk_b9b3_OfflineWallet_new.argtypes = (
+_UniFFILib.ffi_bdk_caca_OfflineWallet_object_free.restype = None
+_UniFFILib.bdk_caca_OfflineWallet_new.argtypes = (
     RustBuffer,
     RustBuffer,
     RustBuffer,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_OfflineWallet_new.restype = ctypes.c_void_p
-_UniFFILib.bdk_b9b3_OfflineWallet_get_new_address.argtypes = (
+_UniFFILib.bdk_caca_OfflineWallet_new.restype = ctypes.c_void_p
+_UniFFILib.bdk_caca_OfflineWallet_get_new_address.argtypes = (
     ctypes.c_void_p,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_OfflineWallet_get_new_address.restype = RustBuffer
-_UniFFILib.bdk_b9b3_OfflineWallet_get_last_unused_address.argtypes = (
+_UniFFILib.bdk_caca_OfflineWallet_get_new_address.restype = RustBuffer
+_UniFFILib.bdk_caca_OfflineWallet_get_last_unused_address.argtypes = (
     ctypes.c_void_p,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_OfflineWallet_get_last_unused_address.restype = RustBuffer
-_UniFFILib.bdk_b9b3_OfflineWallet_get_balance.argtypes = (
+_UniFFILib.bdk_caca_OfflineWallet_get_last_unused_address.restype = RustBuffer
+_UniFFILib.bdk_caca_OfflineWallet_get_balance.argtypes = (
     ctypes.c_void_p,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_OfflineWallet_get_balance.restype = ctypes.c_uint64
-_UniFFILib.bdk_b9b3_OfflineWallet_sign.argtypes = (
+_UniFFILib.bdk_caca_OfflineWallet_get_balance.restype = ctypes.c_uint64
+_UniFFILib.bdk_caca_OfflineWallet_sign.argtypes = (
     ctypes.c_void_p,
     ctypes.c_void_p,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_OfflineWallet_sign.restype = None
-_UniFFILib.bdk_b9b3_OfflineWallet_get_transactions.argtypes = (
+_UniFFILib.bdk_caca_OfflineWallet_sign.restype = None
+_UniFFILib.bdk_caca_OfflineWallet_get_transactions.argtypes = (
     ctypes.c_void_p,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_OfflineWallet_get_transactions.restype = RustBuffer
-_UniFFILib.ffi_bdk_b9b3_OnlineWallet_object_free.argtypes = (
+_UniFFILib.bdk_caca_OfflineWallet_get_transactions.restype = RustBuffer
+_UniFFILib.ffi_bdk_caca_OnlineWallet_object_free.argtypes = (
     ctypes.c_void_p,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.ffi_bdk_b9b3_OnlineWallet_object_free.restype = None
-_UniFFILib.bdk_b9b3_OnlineWallet_new.argtypes = (
+_UniFFILib.ffi_bdk_caca_OnlineWallet_object_free.restype = None
+_UniFFILib.bdk_caca_OnlineWallet_new.argtypes = (
     RustBuffer,
     RustBuffer,
     RustBuffer,
@@ -459,104 +464,104 @@ _UniFFILib.bdk_b9b3_OnlineWallet_new.argtypes = (
     RustBuffer,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_OnlineWallet_new.restype = ctypes.c_void_p
-_UniFFILib.bdk_b9b3_OnlineWallet_get_new_address.argtypes = (
+_UniFFILib.bdk_caca_OnlineWallet_new.restype = ctypes.c_void_p
+_UniFFILib.bdk_caca_OnlineWallet_get_new_address.argtypes = (
     ctypes.c_void_p,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_OnlineWallet_get_new_address.restype = RustBuffer
-_UniFFILib.bdk_b9b3_OnlineWallet_get_last_unused_address.argtypes = (
+_UniFFILib.bdk_caca_OnlineWallet_get_new_address.restype = RustBuffer
+_UniFFILib.bdk_caca_OnlineWallet_get_last_unused_address.argtypes = (
     ctypes.c_void_p,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_OnlineWallet_get_last_unused_address.restype = RustBuffer
-_UniFFILib.bdk_b9b3_OnlineWallet_get_balance.argtypes = (
+_UniFFILib.bdk_caca_OnlineWallet_get_last_unused_address.restype = RustBuffer
+_UniFFILib.bdk_caca_OnlineWallet_get_balance.argtypes = (
     ctypes.c_void_p,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_OnlineWallet_get_balance.restype = ctypes.c_uint64
-_UniFFILib.bdk_b9b3_OnlineWallet_sign.argtypes = (
+_UniFFILib.bdk_caca_OnlineWallet_get_balance.restype = ctypes.c_uint64
+_UniFFILib.bdk_caca_OnlineWallet_sign.argtypes = (
     ctypes.c_void_p,
     ctypes.c_void_p,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_OnlineWallet_sign.restype = None
-_UniFFILib.bdk_b9b3_OnlineWallet_get_transactions.argtypes = (
+_UniFFILib.bdk_caca_OnlineWallet_sign.restype = None
+_UniFFILib.bdk_caca_OnlineWallet_get_transactions.argtypes = (
     ctypes.c_void_p,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_OnlineWallet_get_transactions.restype = RustBuffer
-_UniFFILib.bdk_b9b3_OnlineWallet_get_network.argtypes = (
+_UniFFILib.bdk_caca_OnlineWallet_get_transactions.restype = RustBuffer
+_UniFFILib.bdk_caca_OnlineWallet_get_network.argtypes = (
     ctypes.c_void_p,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_OnlineWallet_get_network.restype = RustBuffer
-_UniFFILib.bdk_b9b3_OnlineWallet_sync.argtypes = (
+_UniFFILib.bdk_caca_OnlineWallet_get_network.restype = RustBuffer
+_UniFFILib.bdk_caca_OnlineWallet_sync.argtypes = (
     ctypes.c_void_p,
     ctypes.c_uint64,
     RustBuffer,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_OnlineWallet_sync.restype = None
-_UniFFILib.bdk_b9b3_OnlineWallet_broadcast.argtypes = (
+_UniFFILib.bdk_caca_OnlineWallet_sync.restype = None
+_UniFFILib.bdk_caca_OnlineWallet_broadcast.argtypes = (
     ctypes.c_void_p,
     ctypes.c_void_p,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_OnlineWallet_broadcast.restype = RustBuffer
-_UniFFILib.ffi_bdk_b9b3_PartiallySignedBitcoinTransaction_object_free.argtypes = (
+_UniFFILib.bdk_caca_OnlineWallet_broadcast.restype = RustBuffer
+_UniFFILib.ffi_bdk_caca_PartiallySignedBitcoinTransaction_object_free.argtypes = (
     ctypes.c_void_p,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.ffi_bdk_b9b3_PartiallySignedBitcoinTransaction_object_free.restype = None
-_UniFFILib.bdk_b9b3_PartiallySignedBitcoinTransaction_new.argtypes = (
+_UniFFILib.ffi_bdk_caca_PartiallySignedBitcoinTransaction_object_free.restype = None
+_UniFFILib.bdk_caca_PartiallySignedBitcoinTransaction_new.argtypes = (
     ctypes.c_void_p,
     RustBuffer,
     ctypes.c_uint64,
     RustBuffer,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_PartiallySignedBitcoinTransaction_new.restype = ctypes.c_void_p
-_UniFFILib.ffi_bdk_b9b3_BdkProgress_init_callback.argtypes = (
+_UniFFILib.bdk_caca_PartiallySignedBitcoinTransaction_new.restype = ctypes.c_void_p
+_UniFFILib.ffi_bdk_caca_BdkProgress_init_callback.argtypes = (
     FOREIGN_CALLBACK_T,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.ffi_bdk_b9b3_BdkProgress_init_callback.restype = None
-_UniFFILib.bdk_b9b3_generate_extended_key.argtypes = (
+_UniFFILib.ffi_bdk_caca_BdkProgress_init_callback.restype = None
+_UniFFILib.bdk_caca_generate_extended_key.argtypes = (
     RustBuffer,
     RustBuffer,
     RustBuffer,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_generate_extended_key.restype = RustBuffer
-_UniFFILib.bdk_b9b3_restore_extended_key.argtypes = (
+_UniFFILib.bdk_caca_generate_extended_key.restype = RustBuffer
+_UniFFILib.bdk_caca_restore_extended_key.argtypes = (
     RustBuffer,
     RustBuffer,
     RustBuffer,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.bdk_b9b3_restore_extended_key.restype = RustBuffer
-_UniFFILib.ffi_bdk_b9b3_rustbuffer_alloc.argtypes = (
+_UniFFILib.bdk_caca_restore_extended_key.restype = RustBuffer
+_UniFFILib.ffi_bdk_caca_rustbuffer_alloc.argtypes = (
     ctypes.c_int32,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.ffi_bdk_b9b3_rustbuffer_alloc.restype = RustBuffer
-_UniFFILib.ffi_bdk_b9b3_rustbuffer_from_bytes.argtypes = (
+_UniFFILib.ffi_bdk_caca_rustbuffer_alloc.restype = RustBuffer
+_UniFFILib.ffi_bdk_caca_rustbuffer_from_bytes.argtypes = (
     ForeignBytes,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.ffi_bdk_b9b3_rustbuffer_from_bytes.restype = RustBuffer
-_UniFFILib.ffi_bdk_b9b3_rustbuffer_free.argtypes = (
+_UniFFILib.ffi_bdk_caca_rustbuffer_from_bytes.restype = RustBuffer
+_UniFFILib.ffi_bdk_caca_rustbuffer_free.argtypes = (
     RustBuffer,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.ffi_bdk_b9b3_rustbuffer_free.restype = None
-_UniFFILib.ffi_bdk_b9b3_rustbuffer_reserve.argtypes = (
+_UniFFILib.ffi_bdk_caca_rustbuffer_free.restype = None
+_UniFFILib.ffi_bdk_caca_rustbuffer_reserve.argtypes = (
     RustBuffer,
     ctypes.c_int32,
     ctypes.POINTER(RustCallStatus),
 )
-_UniFFILib.ffi_bdk_b9b3_rustbuffer_reserve.restype = RustBuffer
+_UniFFILib.ffi_bdk_caca_rustbuffer_reserve.restype = RustBuffer
 
 # Public interface members begin here.
 
@@ -973,7 +978,7 @@ def generate_extended_key(network,mnemonic_type,password):
     network = network
     mnemonic_type = mnemonic_type
     password = (None if password is None else password)
-    _retval = rust_call_with_error(BdkError,_UniFFILib.bdk_b9b3_generate_extended_key,network._lower(),mnemonic_type._lower(),FfiConverterOptionalString._lower(password))
+    _retval = rust_call_with_error(BdkError,_UniFFILib.bdk_caca_generate_extended_key,network._lower(),mnemonic_type._lower(),FfiConverterOptionalString._lower(password))
     return ExtendedKeyInfo._lift(_retval)
 
 
@@ -982,7 +987,7 @@ def restore_extended_key(network,mnemonic,password):
     network = network
     mnemonic = mnemonic
     password = (None if password is None else password)
-    _retval = rust_call_with_error(BdkError,_UniFFILib.bdk_b9b3_restore_extended_key,network._lower(),FfiConverterString._lower(mnemonic),FfiConverterOptionalString._lower(password))
+    _retval = rust_call_with_error(BdkError,_UniFFILib.bdk_caca_restore_extended_key,network._lower(),FfiConverterString._lower(mnemonic),FfiConverterOptionalString._lower(password))
     return ExtendedKeyInfo._lift(_retval)
 
 
@@ -992,13 +997,13 @@ class OfflineWallet(object):
         descriptor = descriptor
         network = network
         database_config = database_config
-        self._pointer = rust_call_with_error(BdkError,_UniFFILib.bdk_b9b3_OfflineWallet_new,FfiConverterString._lower(descriptor),network._lower(),database_config._lower())
+        self._pointer = rust_call_with_error(BdkError,_UniFFILib.bdk_caca_OfflineWallet_new,FfiConverterString._lower(descriptor),network._lower(),database_config._lower())
 
     def __del__(self):
         # In case of partial initialization of instances.
         pointer = getattr(self, "_pointer", None)
         if pointer is not None:
-            rust_call(_UniFFILib.ffi_bdk_b9b3_OfflineWallet_object_free, pointer)
+            rust_call(_UniFFILib.ffi_bdk_caca_OfflineWallet_object_free, pointer)
 
     # Used by alternative constructors or any methods which return this type.
     @classmethod
@@ -1012,26 +1017,26 @@ class OfflineWallet(object):
     
 
     def get_new_address(self, ):
-        _retval = rust_call(_UniFFILib.bdk_b9b3_OfflineWallet_get_new_address,self._pointer,)
+        _retval = rust_call(_UniFFILib.bdk_caca_OfflineWallet_get_new_address,self._pointer,)
         return FfiConverterString._lift(_retval)
     
     def get_last_unused_address(self, ):
-        _retval = rust_call(_UniFFILib.bdk_b9b3_OfflineWallet_get_last_unused_address,self._pointer,)
+        _retval = rust_call(_UniFFILib.bdk_caca_OfflineWallet_get_last_unused_address,self._pointer,)
         return FfiConverterString._lift(_retval)
     
     def get_balance(self, ):
         _retval = rust_call_with_error(
-    BdkError,_UniFFILib.bdk_b9b3_OfflineWallet_get_balance,self._pointer,)
+    BdkError,_UniFFILib.bdk_caca_OfflineWallet_get_balance,self._pointer,)
         return FfiConverterUInt64._lift(_retval)
     
     def sign(self, psbt):
         psbt = psbt
         rust_call_with_error(
-    BdkError,_UniFFILib.bdk_b9b3_OfflineWallet_sign,self._pointer,psbt._lower())
+    BdkError,_UniFFILib.bdk_caca_OfflineWallet_sign,self._pointer,psbt._lower())
     
     def get_transactions(self, ):
         _retval = rust_call_with_error(
-    BdkError,_UniFFILib.bdk_b9b3_OfflineWallet_get_transactions,self._pointer,)
+    BdkError,_UniFFILib.bdk_caca_OfflineWallet_get_transactions,self._pointer,)
         return FfiConverterSequenceEnumTransaction._lift(_retval)
     
     
@@ -1064,13 +1069,13 @@ class OnlineWallet(object):
         network = network
         database_config = database_config
         blockchain_config = blockchain_config
-        self._pointer = rust_call_with_error(BdkError,_UniFFILib.bdk_b9b3_OnlineWallet_new,FfiConverterString._lower(descriptor),FfiConverterOptionalString._lower(change_descriptor),network._lower(),database_config._lower(),blockchain_config._lower())
+        self._pointer = rust_call_with_error(BdkError,_UniFFILib.bdk_caca_OnlineWallet_new,FfiConverterString._lower(descriptor),FfiConverterOptionalString._lower(change_descriptor),network._lower(),database_config._lower(),blockchain_config._lower())
 
     def __del__(self):
         # In case of partial initialization of instances.
         pointer = getattr(self, "_pointer", None)
         if pointer is not None:
-            rust_call(_UniFFILib.ffi_bdk_b9b3_OnlineWallet_object_free, pointer)
+            rust_call(_UniFFILib.ffi_bdk_caca_OnlineWallet_object_free, pointer)
 
     # Used by alternative constructors or any methods which return this type.
     @classmethod
@@ -1084,42 +1089,42 @@ class OnlineWallet(object):
     
 
     def get_new_address(self, ):
-        _retval = rust_call(_UniFFILib.bdk_b9b3_OnlineWallet_get_new_address,self._pointer,)
+        _retval = rust_call(_UniFFILib.bdk_caca_OnlineWallet_get_new_address,self._pointer,)
         return FfiConverterString._lift(_retval)
     
     def get_last_unused_address(self, ):
-        _retval = rust_call(_UniFFILib.bdk_b9b3_OnlineWallet_get_last_unused_address,self._pointer,)
+        _retval = rust_call(_UniFFILib.bdk_caca_OnlineWallet_get_last_unused_address,self._pointer,)
         return FfiConverterString._lift(_retval)
     
     def get_balance(self, ):
         _retval = rust_call_with_error(
-    BdkError,_UniFFILib.bdk_b9b3_OnlineWallet_get_balance,self._pointer,)
+    BdkError,_UniFFILib.bdk_caca_OnlineWallet_get_balance,self._pointer,)
         return FfiConverterUInt64._lift(_retval)
     
     def sign(self, psbt):
         psbt = psbt
         rust_call_with_error(
-    BdkError,_UniFFILib.bdk_b9b3_OnlineWallet_sign,self._pointer,psbt._lower())
+    BdkError,_UniFFILib.bdk_caca_OnlineWallet_sign,self._pointer,psbt._lower())
     
     def get_transactions(self, ):
         _retval = rust_call_with_error(
-    BdkError,_UniFFILib.bdk_b9b3_OnlineWallet_get_transactions,self._pointer,)
+    BdkError,_UniFFILib.bdk_caca_OnlineWallet_get_transactions,self._pointer,)
         return FfiConverterSequenceEnumTransaction._lift(_retval)
     
     def get_network(self, ):
-        _retval = rust_call(_UniFFILib.bdk_b9b3_OnlineWallet_get_network,self._pointer,)
+        _retval = rust_call(_UniFFILib.bdk_caca_OnlineWallet_get_network,self._pointer,)
         return Network._lift(_retval)
     
     def sync(self, progress_update,max_address_param):
         progress_update = progress_update
         max_address_param = (None if max_address_param is None else int(max_address_param))
         rust_call_with_error(
-    BdkError,_UniFFILib.bdk_b9b3_OnlineWallet_sync,self._pointer,FfiConverterCallbackInterfaceBdkProgress._lower(progress_update),FfiConverterOptionalUInt32._lower(max_address_param))
+    BdkError,_UniFFILib.bdk_caca_OnlineWallet_sync,self._pointer,FfiConverterCallbackInterfaceBdkProgress._lower(progress_update),FfiConverterOptionalUInt32._lower(max_address_param))
     
     def broadcast(self, psbt):
         psbt = psbt
         _retval = rust_call_with_error(
-    BdkError,_UniFFILib.bdk_b9b3_OnlineWallet_broadcast,self._pointer,psbt._lower())
+    BdkError,_UniFFILib.bdk_caca_OnlineWallet_broadcast,self._pointer,psbt._lower())
         return Transaction._lift(_retval)
     
     
@@ -1151,13 +1156,13 @@ class PartiallySignedBitcoinTransaction(object):
         recipient = recipient
         amount = int(amount)
         fee_rate = (None if fee_rate is None else float(fee_rate))
-        self._pointer = rust_call_with_error(BdkError,_UniFFILib.bdk_b9b3_PartiallySignedBitcoinTransaction_new,wallet._lower(),FfiConverterString._lower(recipient),FfiConverterUInt64._lower(amount),FfiConverterOptionalFloat._lower(fee_rate))
+        self._pointer = rust_call_with_error(BdkError,_UniFFILib.bdk_caca_PartiallySignedBitcoinTransaction_new,wallet._lower(),FfiConverterString._lower(recipient),FfiConverterUInt64._lower(amount),FfiConverterOptionalFloat._lower(fee_rate))
 
     def __del__(self):
         # In case of partial initialization of instances.
         pointer = getattr(self, "_pointer", None)
         if pointer is not None:
-            rust_call(_UniFFILib.ffi_bdk_b9b3_PartiallySignedBitcoinTransaction_object_free, pointer)
+            rust_call(_UniFFILib.ffi_bdk_caca_PartiallySignedBitcoinTransaction_object_free, pointer)
 
     # Used by alternative constructors or any methods which return this type.
     @classmethod
@@ -1732,7 +1737,7 @@ def py_foreignCallbackCallbackInterfaceBdkProgress(handle, method, args, buf_ptr
 foreignCallbackCallbackInterfaceBdkProgress = FOREIGN_CALLBACK_T(py_foreignCallbackCallbackInterfaceBdkProgress)
 
 # The FfiConverter which transforms the Callbacks in to Handles to pass to Rust.
-rust_call(lambda err: _UniFFILib.ffi_bdk_b9b3_BdkProgress_init_callback(foreignCallbackCallbackInterfaceBdkProgress, err))
+rust_call(lambda err: _UniFFILib.ffi_bdk_caca_BdkProgress_init_callback(foreignCallbackCallbackInterfaceBdkProgress, err))
 FfiConverterCallbackInterfaceBdkProgress = FfiConverterCallbackInterface(foreignCallbackCallbackInterfaceBdkProgress)
 class FfiConverterUInt8(Primitive):
     @staticmethod

@@ -7,13 +7,19 @@ cargo build --manifest-path ./bdk-ffi/Cargo.toml --release
 
 echo "Generate bdk-ffi Python bindings"
 # clean solution once uniffi-bindgen 0.15.3 is released
-# uniffi-bindgen generate src/bdk.udl --no-format --out-dir ../src/bdkpython/ --language python
+#uniffi-bindgen generate ./bdk-ffi/src/bdk.udl --no-format --out-dir ./src/bdkpython/ --language python
 
-# in the meantime, set UNIFFI_BINDGEN environment variable to a local, latest version of uniffi-rs/uniffi_bindgen/Cargo.toml
-# and the BDK_PYTHON environment variable to the current directory
-#cd $UNIFFI_BINDGEN/
-#cargo run -- generate $BDK_PYTHON/src/bdk.udl --no-format --out-dir ./src/bdkpython/ --language python
-#cd -
+mkdir ./src/bdkpython/linux-x86_64/
+cp ./bdk-ffi/target/release/libbdkffi.so ./src/bdkpython/linux-x86_64/
 
-cargo run --manifest-path $UNIFFI_BINDGEN -- generate ./bdk-ffi/src/bdk.udl --no-format --out-dir ./src/bdkpython/ --language python
-cp ./bdk-ffi/target/release/libbdkffi.dylib ./src/bdkpython/
+python3 -m venv .venv
+source .venv/bin/activate
+
+pip3 install build
+pip3 install tox
+
+python3 -m build
+
+pip3 install dist/bdkpython-0.0.4-py3-none-any.whl
+
+python3 -m tox
